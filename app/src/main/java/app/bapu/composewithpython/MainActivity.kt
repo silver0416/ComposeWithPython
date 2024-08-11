@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    Greeting("speedTest")
                 }
             }
         }
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    var text by remember { mutableStateOf("Loading...") }
+    var text by remember { mutableStateOf("running...") }
 
     LaunchedEffect(Unit) {
         // 初始化Python
@@ -56,13 +56,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             Python.start(AndroidPlatform(context))
         }
         val python = Python.getInstance()
-        val pyMo = python.getModule("long_task")
+        val pyMo = python.getModule("speedTest")
         withContext(Dispatchers.IO) {
-            pyMo.callAttr("long_running_task")
+            text = pyMo.callAttr("measure_performance").toString()
         }
     }
 
-    Text(text = "$name, $text", modifier = modifier)
+    Text(text = "$name,\n $text", modifier = modifier)
 }
 
 
